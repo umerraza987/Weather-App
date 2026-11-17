@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="heading">
+        <h1>Weather App</h1>
+    </div>
+    <div class="weather">
+        <div class="search">
+            <input type="text" placeholder=" Enter Your City Name" class="city-name">
+            <button class="search-btn"><img src="./img/searchicn.jfif" alt=""></button>
+        </div>
+        <div class="card ">
+            <img class="weather-img" src="./img/clear-sky.png" alt="">
+            <h1 class="temp-value">20℃</h1>
+            <h2 id="city-name">New York</h2>
+            <div class="container row">
+                <div class="col container">
+                    <img src="./img/humidity.com.png" alt="">
+                    <div class="value">
+                        <p class="humidity-value">99%</p>
+                        <span class="humidity">Humidity</span>
+                    </div>
+                </div>
+                <div class="col container">
+                    <img src="./img/wind-speed.png" alt="">
+                    <div class="value">
+                        <p class="wind-value">72km/h</p>
+                        <span class="windspeed">Wind Speed</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div>
+            <p class="error">City is Not Found</p>
+        </div>
+    </div>
+    <div class="footer">
+        <h2>Made By Umer</h2>
+    </div>
+
+    <script src="./app.js">
+        const cityInput = document.querySelector('.city-name');
+        const btnSearch = document.querySelector('.search-btn');
+        const weatherCard = document.querySelector('.card');
+
+        const weatherImg=  document.querySelector('.weather-img')
+        const tempValue = document.querySelector('.temp-value');
+        const cityName = document.querySelector('#city-name');
+        const humidityValue = document.querySelector('.humidity-value');
+        const windValue = document.querySelector('.wind-value');
+        const error = document.querySelector('.error')
+        async function checkWeather(city) {
+            const apiKey = "228fd090ffdf9ca5c0d97dab377e00d1";
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=`;
+            const res = await fetch(apiUrl + city + `&appid=${apiKey}`);
+            const data = await res.json();
+            if (data.cod == 404){
+                error.style.display= 'block';
+                weatherCard.style.display= 'none';
+                
+            }else{
+                tempValue.textContent= Math.round(data.main.temp) +'℃';
+                cityName.innerHTML= data.name;
+                humidityValue.textContent=data.main.humidity +'%';
+                windValue.textContent=data.wind.speed +'Km/H';
+                weatherCard.style.display= 'block';
+                error.style.display= 'none';
+                console.log(data);
+                if (data.weather[0].main == 'Haze') {
+                    weatherImg.src ="./img/haze.png"
+                }else if(data.weather[0].main == 'Clear'){
+                    weatherImg.src = "./img/clear-sky.png"
+                }else if(data.weather[0].main == 'Clouds'){
+                    weatherImg.src = "./img/cloudy.png"
+                }else if(data.weather[0].main == 'Drizzle'){
+                    weatherImg.src = "./img/drizzle.png"
+                }else if(data.weather[0].main == 'Fog'){
+                    weatherImg.src = "./img/fog.png"
+                }else if(data.weather[0].main == 'Rain'){
+                    weatherImg.src = "./img/rainy-day.png"
+                }else if(data.weather[0].main == 'Snow'){
+                    weatherImg.src = "./img/snow.png"
+                }
+
+            }
+
+            
+            
+        };
+        
+        btnSearch.addEventListener("click",function weather() {
+            checkWeather(cityInput.value);
+        });
+        cityInput.addEventListener('keydown',function (event) {
+            if (event.key === 'Enter') {
+                checkWeather(cityInput.value);
+            }
+        })
+    </script>
+</body>
+
+</html>
